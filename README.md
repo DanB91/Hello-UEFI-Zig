@@ -4,8 +4,8 @@ This repo contains a very small amount of code to get started writing an OS or a
 
 Requirements:
 ---
-- Zig compiler
-- qemu x86-64 version
+- Zig compiler in $PATH
+- qemu-x86-64 in $PATH
 - Linux or Mac (might run on Windows, but has not been tested)
 
 
