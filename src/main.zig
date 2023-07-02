@@ -17,7 +17,7 @@ pub fn main() void {
     const boot_services = uefi.system_table.boot_services.?;
 
     var gop: *uefi.protocols.GraphicsOutputProtocol = undefined;
-    var status = boot_services.locateProtocol(&uefi.protocols.GraphicsOutputProtocol.guid, null, @ptrCast(*?*anyopaque, &gop));
+    var status = boot_services.locateProtocol(&uefi.protocols.GraphicsOutputProtocol.guid, null, @as(*?*anyopaque, @ptrCast(&gop)));
     if (status != uefi.Status.Success) {
         _ = console_out.outputString(utf16("No GOP!\r\n"));
         hang();
@@ -56,7 +56,7 @@ pub fn main() void {
     }
 
     //TODO check the pixel format of the frame buffer. assuming xRGB (blue is LSB) for now.
-    const frame_buffer: []volatile u32 = @intToPtr([*]volatile u32, frame_buffer_address)[0 .. frame_buffer_len / 4];
+    const frame_buffer: []volatile u32 = @as([*]volatile u32, @ptrFromInt(frame_buffer_address))[0 .. frame_buffer_len / 4];
     for (frame_buffer) |*px| {
         px.* = 0x00FF0000;
     }

@@ -16,15 +16,21 @@ pub fn build(b: *std.build.Builder) void {
 
     // Standard release options allow the person running `zig build` to select
     // between Debug, ReleaseSafe, ReleaseFast, and ReleaseSmall.
-    const mode = b.standardReleaseOptions();
+    const mode = b.standardOptimizeOption(.{});
 
-    const exe = b.addExecutable("bootx64", "src/main.zig");
-    exe.setTarget(target);
-    exe.setBuildMode(mode);
-    exe.install();
+    const exe = b.addExecutable(.{
+        .name = "bootx64",
+        .root_source_file = std.Build.FileSource.relative("src/main.zig"),
+        .target = target,
+        .optimize = mode,
+    });
+
+    b.default_step.dependOn(&exe.step);
+
+    const install_step = b.addInstallArtifact(exe);
 
     const run_cmd = b.addSystemCommand(&.{ "qemu-system-x86_64", "-serial", "stdio", "-bios", "OVMF.fd", "-drive", "format=raw,file=fat:rw:zig-out" });
-    run_cmd.step.dependOn(b.getInstallStep());
+    run_cmd.step.dependOn(&install_step.step);
     if (b.args) |args| {
         run_cmd.addArgs(args);
     }
