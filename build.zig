@@ -1,6 +1,6 @@
 const std = @import("std");
 
-pub fn build(b: *std.build.Builder) void {
+pub fn build(b: *std.Build) void {
     // Standard target options allows the person running `zig build` to choose
     // what target to build for. Here we do not override the defaults, which
     // means any target is allowed, and the default is native. Other options
@@ -27,7 +27,7 @@ pub fn build(b: *std.build.Builder) void {
 
     b.default_step.dependOn(&exe.step);
 
-    const install_step = b.addInstallArtifact(exe);
+    const install_step = b.addInstallArtifact(exe, .{ .dest_dir = .{ .override = .bin } });
 
     const run_cmd = b.addSystemCommand(&.{ "qemu-system-x86_64", "-serial", "stdio", "-bios", "OVMF.fd", "-drive", "format=raw,file=fat:rw:zig-out" });
     run_cmd.step.dependOn(&install_step.step);
