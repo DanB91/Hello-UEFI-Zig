@@ -16,8 +16,8 @@ pub fn main() void {
     _ = console_out.outputString(utf16("Hello World!!\r\n"));
     const boot_services = uefi.system_table.boot_services.?;
 
-    var gop: *uefi.protocols.GraphicsOutputProtocol = undefined;
-    var status = boot_services.locateProtocol(&uefi.protocols.GraphicsOutputProtocol.guid, null, @as(*?*anyopaque, @ptrCast(&gop)));
+    var gop: *uefi.protocol.GraphicsOutput = undefined;
+    var status = boot_services.locateProtocol(&uefi.protocol.GraphicsOutput.guid, null, @as(*?*anyopaque, @ptrCast(&gop)));
     if (status != uefi.Status.Success) {
         _ = console_out.outputString(utf16("No GOP!\r\n"));
         hang();
